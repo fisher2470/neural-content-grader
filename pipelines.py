@@ -135,6 +135,9 @@ class QGPipeline:
             if len(answer) == 0: continue
             sent = sents[i]
             for answer_text in answer:
+                if answer_text in sent:
+                    ans_start_idx = sent.index(answer_text) 
+                else: continue
                 sents_copy = sents[:]
                 
                 answer_text = answer_text.strip()
