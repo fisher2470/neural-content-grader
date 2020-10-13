@@ -30,22 +30,25 @@ for link in soup.find_all('a'):
 
 total_links = x
 
-internal_links = []
-outbound_links = []
+internal_links = {}
+outbound_links = {}
 
 for link in link_list:
     try:
         if (link.find(domain)) != -1:
             if (link not in internal_links):
                 print("Added ", link)
-                internal_links.append(link)
+                internal_links[link] = 1
         else:
-            outbound_links.append(link)
+            outbound_links[link] = 1
     except AttributeError as el:
         print("Broken Link ", link)
 
 check_list = []
-for link in internal_links:
+
+check_list = list(internal_links.keys())
+
+for link in check_list:
     if (link[0:1] == 'h'):
         new_url = link
         new_page = requests.get(new_url)
@@ -59,22 +62,25 @@ for link in internal_links:
             try:
                 if (new_link in internal_links):
                     print("Included ", new_link)
+                    count = internal_links[new_link]
+                    internal_links[new_link] = count + 1
                 elif (new_link != "") & (new_link.find(initial_url) != -1):
-                    internal_links.append(new_link)
+                    internal_links[new_link] = 1
+                    check_list.append(new_link)
                     print("Added ", new_link)
                 if (new_link != "") & (new_link.find(initial_url) == -1):
-                    outbound_links.append(new_link)
+                    outbound_links[new_link] = 1
             except AttributeError as e:
                 print("Dead Link ", new_link)
                 continue #skips dead link
 
-for link in internal_links:
+for link, count in internal_links.items():
     print("Internal Link: ", link)
 
 f = open(domain + ".txt", "w+")
-for link in internal_links:
-    f.write("Internal Link: " + link + "\n")
-for link in outbound_links:
-    f.write("Outbound Link: " + link + "\n")
+for link, count in internal_links.items():
+    f.write("Internal Link: " + link + " is used: " + str(count) + " times\n")
+for link, count in outbound_links.items():
+    f.write("Outbound Link: " + link + " is used: " + str(count) + " times\n")
 f.close
 
