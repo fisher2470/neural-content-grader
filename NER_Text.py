@@ -41,10 +41,13 @@ words = nlp(test)
 searchList = []
 for i in words:
     print(i["word"])
-    if (len(i["word"]) > 2):
-        searchList.append(i["word"])
+    if (i["word"].find('#') != -1):
+        if (i["score"] < .5):
+            continue
+        newstring = i["word"]
+        searchList[-1] = searchList[-1] + newstring[1:]
     else:
-        continue
+        searchList.append(i["word"])
 
 index = 0
 trendsSearch = []
