@@ -3,7 +3,6 @@ from lxml import html
 import requests
 
 import pandas as pd
-from pytrends.request import TrendReq
 
 from transformers import pipeline, AutoModelForTokenClassification, AutoTokenizer
 import torch
@@ -24,8 +23,6 @@ page.text
 soup = BeautifulSoup(page.text, 'html.parser')
 
 print(soup.prettify())
-
-pytrend = TrendReq()
 
 test = soup.get_text("|", strip=True)
 
@@ -52,13 +49,10 @@ for i in words:
 index = 0
 trendsSearch = []
 
-for i in searchList:
-    if(index < 5):
-        trendsSearch.append(i)
-        index = index + 1
-    else:
-        print(pytrend.build_payload(trendsSearch))
-        related_queries_dict = pytrend.related_queries()
-        print(related_queries_dict)
-        index = 0
-        trendsSearch = []
+testString = searchList[0]
+
+searchResultPage = input("Search Results URL:")
+
+answer = searchResultPage + "/?q=" + testString
+
+print(answer)
